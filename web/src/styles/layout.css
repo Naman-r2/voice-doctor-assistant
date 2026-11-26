@@ -1,0 +1,247 @@
+/* The page frame: the 3D scene behind everything, film grain over it, the top
+   bar, and two columns (the open stage, and the floating panels). */
+
+.app {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+/* ---------- the scene (a WebGL canvas, see components/scene) ---------- */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  /* a faint horizon glow, so the scene is not flat black where there are no particles */
+  background:
+    radial-gradient(60% 50% at 24% 42%, rgba(60, 80, 160, 0.16), transparent 70%),
+    radial-gradient(50% 40% at 90% 100%, rgba(91, 140, 255, 0.08), transparent 70%), var(--bg);
+}
+
+.scene canvas {
+  display: block;
+}
+
+/* film grain and a vignette: what makes it read as a shot, not a web page */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.7)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--bar-height);
+  padding: 0 32px;
+  background: linear-gradient(rgba(5, 6, 10, 0.85), transparent);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: var(--text);
+}
+
+.brand strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.brand div span {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.now {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.now .mono {
+  color: var(--text);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ok);
+}
+
+.status-dot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* a sonar ping while the agent is reachable */
+.status.is-up .status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ping 2s var(--ease) infinite;
+}
+
+.status.is-down {
+  color: var(--danger);
+}
+
+@keyframes ping {
+  to {
+    transform: scale(3.6);
+    opacity: 0;
+  }
+}
+
+/* ---------- columns ---------- */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(360px, 34vw) minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 12px 32px 56px;
+}
+
+.stage-column {
+  position: sticky;
+  top: calc(var(--bar-height) + 12px);
+  height: calc(100vh - var(--bar-height) - 36px);
+  min-height: 600px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: 0;
+  perspective: 1600px; /* the panels tilt in this space */
+}
+
+.split {
+  perspective: 1600px;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+/* On a desktop the page itself never scrolls: the call and its buttons stay
+   where they are, and only the panels on the right scroll. */
+@media (min-width: 1021px) {
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .topbar {
+    position: static;
+    flex: none;
+  }
+
+  .workspace {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    align-items: stretch;
+    padding-bottom: 0;
+  }
+
+  .stage-column {
+    position: static;
+    height: auto;
+    min-height: 0;
+    padding-bottom: 16px;
+  }
+
+  .content {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0 8px 40px 0;
+  }
+}
+
+@media (max-width: 1360px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1020px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    padding: 8px 16px 40px;
+  }
+
+  /* On a narrow screen the call comes first: it is what the visitor is here to do. */
+  .stage-column {
+    position: static;
+    height: auto;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .now {
+    display: none;
+  }
+}

@@ -1,0 +1,355 @@
+/* Pieces used in more than one place: cards, buttons, badges, toasts, skeletons. */
+
+/* ---------- card ---------- */
+.card {
+  position: relative;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  animation: float-in 0.9s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 150ms);
+  transition:
+    border-color 0.3s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+/* the light that follows the pointer (Card.jsx sets --spot-x / --spot-y) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, -40%), var(--spot), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+  pointer-events: none;
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card > * {
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 22px 16px;
+}
+
+.card-head h2 {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.card-head p {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.empty {
+  padding: 34px 22px 38px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ---------- buttons ---------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    transform 0.2s var(--spring),
+    background 0.2s,
+    opacity 0.2s;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* on the dark stage */
+.button-light {
+  background: #fff;
+  color: #0b1220;
+}
+
+.button-light:hover:not(:disabled) {
+  background: #dbeafe;
+}
+
+.button-quiet {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.button-quiet:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    transform 0.4s var(--spring);
+}
+
+.icon-button:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  transform: rotate(18deg);
+}
+
+/* ---------- badges ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-ok {
+  background: var(--ok-soft);
+  border-color: var(--ok-border);
+  color: var(--ok);
+}
+
+.badge-muted {
+  background: var(--surface-sunken);
+  border-color: var(--border);
+  color: var(--text-subtle);
+}
+
+.badge-accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.badge-live {
+  background: var(--ok-soft);
+  border-color: var(--ok-border);
+  color: var(--ok);
+}
+
+.badge-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+/* ---------- segmented control (the day picker) ---------- */
+.segmented {
+  display: inline-flex;
+  max-width: 100%;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.segmented button {
+  position: relative;
+  min-height: 34px;
+  padding: 0 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+/* the marker slides in under the chosen day */
+.segmented button::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transition: transform 0.35s var(--ease);
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button[aria-selected="true"] {
+  color: var(--text);
+}
+
+.segmented button[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+/* ---------- toasts ---------- */
+.toasts {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px 12px 12px;
+  border: 1px solid var(--ok-border);
+  border-radius: var(--radius);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-pop);
+  animation:
+    toast-in 0.5s var(--spring) both,
+    toast-out 0.4s var(--ease) 4.6s both;
+}
+
+.toast.is-cancelled {
+  border-color: var(--danger-border);
+}
+
+.toast-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ok);
+  color: #04130d;
+}
+
+.toast.is-cancelled .toast-mark {
+  background: var(--danger);
+  color: #fff;
+}
+
+.toast strong,
+.toast span {
+  display: block;
+  white-space: nowrap;
+}
+
+.toast div span {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* ---------- loading ---------- */
+.skeleton-rows {
+  display: grid;
+  gap: 10px;
+  padding: 6px 22px 22px;
+}
+
+.skeleton {
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(100deg, var(--surface-sunken) 30%, var(--border) 50%, var(--surface-sunken) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.6s linear infinite;
+  animation-delay: calc(var(--i) * 120ms);
+}
+
+/* ---------- shared motion ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* panels arrive from deeper in the scene */
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translate3d(60px, 20px, -240px) rotateY(-14deg);
+    filter: blur(6px);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -300% 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

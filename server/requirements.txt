@@ -1,0 +1,6 @@
+pipecat-ai[elevenlabs,groq,webrtc,silero]>=1.13
+fastapi
+uvicorn
+python-dotenv
+aiohttp
+loguru
