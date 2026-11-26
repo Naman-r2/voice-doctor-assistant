@@ -50,12 +50,7 @@ in code (`app/agent/guards.py`, `tools.py`, `processors.py`).
 ## Getting started
 
 Requires Python 3.11+ and Node 18+, plus API keys for
-[ElevenLabs](https://elevenlabs.io) and [Groq](https://console.groq.com/keys). Put the keys in `server/.env`:
-
-```
-ELEVENLABS_API_KEY=...
-GROQ_API_KEY=...
-```
+[ElevenLabs](https://elevenlabs.io) and [Groq](https://console.groq.com/keys).
 
 ```bash
 # server, http://localhost:7860
@@ -63,6 +58,7 @@ cd server
 python -m venv .venv
 .venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
+copy .env.example .env            # macOS/Linux: cp .env.example .env, then add both keys
 python -m app.main
 ```
 
@@ -77,7 +73,7 @@ Open http://localhost:5173, start a call and allow the microphone.
 
 ## Configuration
 
-Set in `server/.env`. Only the two keys are required.
+Set in `server/.env`, copied from [`server/.env.example`](server/.env.example). Only the two keys are required.
 
 | Variable               | Default                | Notes                                                                             |
 | ---------------------- | ---------------------- | --------------------------------------------------------------------------------- |

@@ -51,7 +51,7 @@ def get_settings() -> Settings:
     load_dotenv(SERVER_DIR / ".env")
     missing = missing_keys()
     if missing:
-        raise RuntimeError(f"{', '.join(missing)} missing. Set them in server/.env (see the README).")
+        raise RuntimeError(f"{', '.join(missing)} missing. Copy .env.example to .env and fill them in.")
     env = os.environ
     defaults = Settings("", "")
     return Settings(
