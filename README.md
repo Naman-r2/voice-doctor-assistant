@@ -47,6 +47,14 @@ in code (`app/agent/guards.py`, `tools.py`, `processors.py`).
 | Invented clinic facts      | The prompt limits what the agent knows; for anything else it says it has no information.         |
 | Noise as speech            | Transcripts that contain only sound tags are dropped.                                            |
 
+### Typed phone numbers
+
+Callers are identified by the phone number they say out loud, and the agent reads it
+back before booking. The typing box is a deliberate fallback for when that fails: it
+only opens after two spoken attempts have not produced ten clear digits. A typed
+number is exact, so it is booked without a read-back. Cancelling still requires a
+spoken yes, even with a typed number.
+
 ## Getting started
 
 Requires Python 3.11+ and Node 18+, plus API keys for
@@ -140,3 +148,5 @@ web/
 
 - Data is in memory and resets when the server restarts.
 - Groq's free tier allows 8,000 tokens a minute and 200,000 a day for the main model.
+- The 3D scene starts with 7,000 to 22,000 particles depending on the device and thins out if
+  frames run slow. Add `?particles=9000` to the URL to set the count yourself.

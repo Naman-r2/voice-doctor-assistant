@@ -3,7 +3,19 @@ import * as THREE from "three";
 import { voiceBus } from "../../lib/voiceBus.js";
 import { dustFragment, dustVertex, sphereFragment, sphereVertex } from "./shaders.js";
 
-const PARTICLES = 22_000;
+// How many particles the sphere starts with. The scene shares the machine with
+// the call's audio, so a laptop gets fewer. `?particles=9000` overrides it.
+function particleBudget() {
+  const asked = Number(new URLSearchParams(window.location.search).get("particles"));
+  if (asked > 0) return Math.min(Math.round(asked), 40_000);
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = navigator.deviceMemory || 4; // GB, capped at 8 by browsers
+  if (cores >= 12 && memory >= 8) return 22_000;
+  if (cores >= 8 && memory >= 8) return 12_000;
+  return 7_000;
+}
+
+const PARTICLES = particleBudget();
 const FEWEST = 3_000; // what a machine without a graphics card still gets
 const SLOW_FRAME = 1 / 28; // seconds; slower than this for a while and the sphere thins out
 const DUST = 1_400;

@@ -1,6 +1,6 @@
-pipecat-ai[elevenlabs,groq,webrtc,silero]>=1.13
-fastapi
-uvicorn
-python-dotenv
-aiohttp
-loguru
+pipecat-ai[elevenlabs,groq,webrtc,silero]==1.17.0
+fastapi==0.165.0
+uvicorn==0.54.0
+aiohttp==3.14.5
+python-dotenv==1.2.4
+loguru==0.7.3
